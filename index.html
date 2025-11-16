@@ -6,9 +6,7 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #000000, #1a1a1a, #000000);  /* Чёрный градиент с красным оттенком */
-            background-size: 400% 400%;  /* Для анимации */
-            animation: gradientAnimation 10s ease infinite;  /* Живая анимация: медленный сдвиг градиента */
+            background: #000000;  /* Чёрный фон */
             color: #ffffff;  /* Белый текст */
             text-align: center;
             margin: 0;
@@ -17,24 +15,52 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            position: relative;
+            overflow: hidden;
         }
-        @keyframes gradientAnimation {
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;  /* Живые частицы на фоне */
+        }
+        .container {
+            background: #111111;  /* Тёмно-чёрный блок */
+            border-radius: 15px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .container::before {
+            content: "";
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #FF0000, #B22222, #FF0000);  /* Анимированный градиентный бордер */
+            background-size: 400% 400%;
+            z-index: -1;
+            animation: borderAnimation 4s linear infinite;
+            border-radius: 15px;
+        }
+        @keyframes borderAnimation {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
-        .container {
-            background: #111111;  /* Тёмно-чёрный блок */
-            border: 2px solid #FF0000;  /* Красная рамка */
-            border-radius: 15px;
-            padding: 40px;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);  /* Красное свечение */
-            max-width: 500px;
-            width: 100%;
-        }
         h1 {
             color: #FF0000;  /* Красный заголовок */
             font-size: 32px;
+            margin-bottom: 5px;
+        }
+        h2 {
+            color: #FF0000;  /* Красный подзаголовок */
+            font-size: 24px;
             margin-bottom: 20px;
         }
         p {
@@ -69,8 +95,10 @@
     </style>
 </head>
 <body>
+    <canvas id="particles"></canvas>  <!-- Холст для частиц -->
     <div class="container">
-        <h1>YoxiKey: Твой уникальный ключ готов!</h1>
+        <h1>YoxiKey</h1>
+        <h2>Your key</h2>
         <p>Ключ сгенерирован автоматически. Скопируй его и вставь в Roblox-скрипт. Он одноразовый и привязан к твоему устройству. Если обновишь страницу — ключ останется тем же.</p>
         <div id="key-container">
             <div id="key"></div>
@@ -104,6 +132,72 @@
         } else {
             generateKey();  // Генерируем новый, если нет
         }
+
+        // Живые частицы (красные точки с свечением)
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        class Particle {
+            constructor(x, y, radius, color, velocity) {
+                this.x = x;
+                this.y = y;
+                this.radius = radius;
+                this.color = color;
+                this.velocity = velocity;
+                this.alpha = 1;
+            }
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.alpha;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
+                ctx.fillStyle = this.color;
+                ctx.shadowColor = this.color;
+                ctx.shadowBlur = 10;  // Свечение
+                ctx.fill();
+                ctx.restore();
+            }
+            update() {
+                this.draw();
+                this.x += this.velocity.x;
+                this.y += this.velocity.y;
+                this.alpha -= 0.005;  // Затухание
+                if (this.alpha < 0) this.alpha = 0;
+            }
+        }
+
+        let particles = [];
+        function createParticles() {
+            const x = Math.random() * canvas.width;
+            const y = Math.random() * canvas.height;
+            const radius = Math.random() * 2 + 1;
+            const color = `rgba(255, 0, 0, ${Math.random() * 0.5 + 0.5})`;  // Красные частицы с вариацией
+            const velocity = { x: (Math.random() - 0.5) * 2, y: (Math.random() - 0.5) * 2 };
+            particles.push(new Particle(x, y, radius, color, velocity));
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach((particle, index) => {
+                if (particle.alpha > 0) {
+                    particle.update();
+                } else {
+                    particles.splice(index, 1);
+                }
+            });
+        }
+
+        setInterval(createParticles, 200);  // Создаём новые частицы каждые 200ms
+        animate();
+
+        // Ресайз холста
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
     </script>
 </body>
 </html>
