@@ -27,13 +27,14 @@
             z-index: -1; /* Фон с искрами */
         }
         .container {
-            background: rgba(17, 17, 17, 0.8); /* Тёмно-чёрный блок с прозрачностью */
-            border-radius: 15px;
-            padding: 40px;
-            max-width: 500px;
+            background: rgba(17, 17, 17, 0.9); /* Увеличенная непрозрачность для лучшей читаемости */
+            border-radius: 20px; /* Более закругленные углы */
+            padding: 50px; /* Больше отступов */
+            max-width: 600px; /* Шире контейнер */
             width: 100%;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5); /* Красная тень для эффекта */
         }
         .border-path {
             position: absolute;
@@ -44,46 +45,54 @@
         }
         .border-path rect {
             stroke: #FF0000; /* Красная линия */
-            stroke-width: 2;
+            stroke-width: 3; /* Толще линия */
             fill: none;
-            stroke-dasharray: 150 1424; /* Длина сегмента и пробела для эффекта движущейся полосы без следа */
+            stroke-dasharray: 200 1324; /* Улучшенный паттерн для полосы */
             stroke-dashoffset: 0;
-            animation: lineAnimation 5s linear infinite; /* Цикл по часовой стрелке */
+            animation: lineAnimation 4s linear infinite; /* Быстрее анимация */
         }
         @keyframes lineAnimation {
             to {
-                stroke-dashoffset: -1574; /* Движение сегмента без оставления следа */
+                stroke-dashoffset: -1524;
             }
         }
         h1 {
-            color: #ffffff; /* Белый заголовок */
-            font-size: 32px;
-            margin-bottom: 5px;
+            color: #FF0000; /* Красный заголовок для акцента */
+            font-size: 36px; /* Больше размер */
+            margin-bottom: 10px;
+            text-shadow: 0 0 10px rgba(255, 0, 0, 0.7); /* Свечение */
         }
         h2 {
-            color: #ffffff; /* Белый подзаголовок */
-            font-size: 24px;
-            margin-bottom: 20px;
+            color: #ffffff;
+            font-size: 28px;
+            margin-bottom: 30px;
         }
         p {
-            font-size: 20px; /* Увеличенный текст */
+            font-size: 20px;
             margin-bottom: 30px;
-            word-wrap: break-word; /* Подгонка под плашку */
-            padding: 0 20px; /* Отступы для адаптации */
+            word-wrap: break-word;
+            padding: 0 20px;
         }
         #key-container {
             display: flex;
             align-items: center;
             justify-content: center;
             margin-top: 20px;
+            background: rgba(255, 0, 0, 0.2); /* Легкий красный фон для отделки */
+            border: 1px solid #FF0000; /* Красная граница */
+            border-radius: 10px;
+            padding: 10px;
+            max-width: 80%;
+            margin: 0 auto;
         }
         #key {
             font-size: 24px;
-            color: #ffffff; /* Белый ключ */
+            color: #ffffff;
             margin-right: 10px;
+            word-break: break-all; /* Для длинных ключей */
         }
         #copyBtn {
-            background: #B22222; /* Тёмно-красная кнопка копирования */
+            background: #B22222;
             color: #ffffff;
             border: none;
             padding: 8px 12px;
@@ -122,14 +131,15 @@
         .nav-btn img {
             width: 32px;
             height: 32px;
+            filter: drop-shadow(0 0 5px rgba(255, 0, 0, 0.5)); /* Свечение для иконки */
         }
     </style>
 </head>
 <body>
     <canvas id="particles"></canvas> <!-- Холст для искр -->
     <div class="container">
-        <svg class="border-path" viewBox="0 0 500 300" preserveAspectRatio="none">
-            <rect x="0" y="0" width="500" height="300" rx="15" ry="15" />
+        <svg class="border-path" viewBox="0 0 600 350" preserveAspectRatio="none"> <!-- Увеличенный viewBox */
+            <rect x="0" y="0" width="600" height="350" rx="20" ry="20" />
         </svg>
         <div class="top-left-nav">
             <button class="nav-btn" onclick="window.open('https://t.me/YomkaMadeIt', '_blank')">
@@ -148,29 +158,31 @@
     </div>
     <script>
         function generateKey() {
-            const randomPart = crypto.randomUUID().replace(/-/g, '').substring(0, 12).toUpperCase(); // Рандом 12 символов
-            const key = randomPart; // Просто рандом без даты/UserId
-            localStorage.setItem('yoxiKey', key); // Сохраняем в localStorage
+            const randomPart = crypto.randomUUID().replace(/-/g, '').substring(0, 12).toUpperCase();
+            const key = randomPart;
+            localStorage.setItem('yoxiKey', key);
             displayKey(key);
         }
         function displayKey(key) {
-            document.getElementById('key').innerHTML = '<strong>' + key + '</strong>'; /* Убрал "Ключ:" */
+            document.getElementById('key').innerHTML = '<strong>' + key + '</strong>';
             document.getElementById('copyBtn').style.display = 'inline-block';
-            window.currentKey = key; // Для копирования
+            window.currentKey = key;
         }
-        function copyKey() {
-            navigator.clipboard.writeText(window.currentKey).then(() => {
+        async function copyKey() {
+            try {
+                await navigator.clipboard.writeText(window.currentKey);
                 alert('Ключ скопирован!');
-            });
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+                alert('Ошибка копирования. Попробуйте вручную.');
+            }
         }
-        // Проверяем localStorage при загрузке
         const storedKey = localStorage.getItem('yoxiKey');
         if (storedKey) {
-            displayKey(storedKey); // Показываем существующий ключ, не генерируем новый
+            displayKey(storedKey);
         } else {
-            generateKey(); // Генерируем новый, если нет
+            generateKey();
         }
-        // Искры от костра (красные/оранжевые частицы, поднимающиеся вверх с свечением)
         const canvas = document.getElementById('particles');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
@@ -194,7 +206,7 @@
                 ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
                 ctx.fillStyle = this.color;
                 ctx.shadowColor = this.color;
-                ctx.shadowBlur = 15; // Увеличенное свечение
+                ctx.shadowBlur = 20; // Увеличенное свечение
                 ctx.fill();
                 ctx.restore();
             }
@@ -202,17 +214,17 @@
                 this.draw();
                 this.x += this.velocity.x;
                 this.y += this.velocity.y;
-                this.alpha -= 0.005; // Затухание
+                this.alpha -= 0.003; // Медленнее затухание
                 if (this.alpha < 0) this.alpha = 0;
             }
         }
         function createParticles() {
             const x = Math.random() * canvas.width;
-            const y = canvas.height; // Начинают снизу (как от костра)
-            const radius = Math.random() * 3 + 1;
-            const colorOptions = ['rgba(255, 69, 0, 1)', 'rgba(255, 165, 0, 1)', 'rgba(255, 0, 0, 1)']; // Красные/оранжевые цвета искр
+            const y = canvas.height;
+            const radius = Math.random() * 4 + 1; // Больше частицы
+            const colorOptions = ['rgba(255, 69, 0, 1)', 'rgba(255, 165, 0, 1)', 'rgba(255, 0, 0, 1)', 'rgba(255, 255, 0, 0.8)']; // Добавлен желтый
             const color = colorOptions[Math.floor(Math.random() * colorOptions.length)];
-            const velocity = { x: (Math.random() - 0.5) * 1, y: - (Math.random() * 4 + 2) }; // Ускоренные искры
+            const velocity = { x: (Math.random() - 0.5) * 1.5, y: - (Math.random() * 5 + 3) }; // Быстрее и шире
             particles.push(new Particle(x, y, radius, color, velocity));
         }
         function animate() {
@@ -227,7 +239,7 @@
             });
         }
         function startParticles() {
-            particleInterval = setInterval(createParticles, 50); // Чаще для эффекта
+            particleInterval = setInterval(createParticles, 30); // Чаще частицы
             animate();
         }
         function stopParticles() {
@@ -235,7 +247,6 @@
             cancelAnimationFrame(animationFrameId);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
-        // Запуск/пауза при видимости страницы
         if (document.visibilityState === 'visible') {
             startParticles();
         }
@@ -246,7 +257,6 @@
                 stopParticles();
             }
         });
-        // Ресайз холста
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
