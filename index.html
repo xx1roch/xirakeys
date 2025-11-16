@@ -96,11 +96,10 @@
             background: #FF0000;
             transform: scale(1.05);
         }
-        .left-nav {
+        .top-left-nav {
             position: absolute;
             left: 20px;
-            top: 50%;
-            transform: translateY(-50%);
+            top: 20px;
             display: flex;
             flex-direction: column;
         }
@@ -110,7 +109,7 @@
             cursor: pointer;
             margin-bottom: 10px;
         }
-        .nav-btn svg {
+        .nav-btn img {
             width: 32px;
             height: 32px;
         }
@@ -145,18 +144,16 @@
     <canvas id="particles"></canvas> <!-- Холст для искр -->
     <div class="avatar-left">
         <div class="avatar-wrapper">
-            <img src="YOUR_ROBLOX_AVATAR_IMAGE_URL_HERE" alt="Left Avatar">
+            <img src="https://www.roblox.com/avatar-thumbnail/image?userId=970424445&width=720&height=720&format=png" alt="Left Avatar">
         </div>
     </div>
     <div class="container">
         <svg class="border-path" viewBox="0 0 500 300" preserveAspectRatio="none">
             <rect x="0" y="0" width="500" height="300" rx="15" ry="15" />
         </svg>
-        <div class="left-nav">
+        <div class="top-left-nav">
             <button class="nav-btn" onclick="window.open('https://t.me/YomkaMadeIt', '_blank')">
-                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M21.5439 2.00098C21.2909 2.09098 4.06894 9.25498 3.66094 9.42098C2.82194 9.77298 3.04294 10.9809 3.83794 10.8239L7.40494 10.0609C7.84494 9.96498 8.30494 10.1079 8.62694 10.4289L12.4029 14.2049C12.7239 14.5259 12.8659 14.9859 12.7709 15.4259L12.0079 18.993C11.8509 19.788 13.0589 20.008 13.4109 19.169C13.5769 18.761 20.7409 1.53998 20.8309 1.28698C20.9289 1.02898 20.8019 0.564976 20.5439 0.456976L4.66994 6.42098L4.66794 6.42298" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
+                <img src="telegram_icon.png" alt="Telegram">
             </button>
         </div>
         <h1>YoxiKey</h1>
@@ -164,12 +161,12 @@
         <p></p> <!-- Пустой p, если нужно добавить текст позже -->
         <div id="key-container">
             <div id="key"></div>
-            <button id="copyBtn" style="display: none;" onclick="copyKey()">Скопировать</button>
+            <button id="copyBtn" style="display: none;" onclick="copyKey()">copy</button>
         </div>
     </div>
     <div class="avatar-right">
         <div class="avatar-wrapper">
-            <img src="YOUR_ROBLOX_AVATAR_IMAGE_URL_HERE" alt="Right Avatar">
+            <img src="https://www.roblox.com/avatar-thumbnail/image?userId=1791178291&width=720&height=720&format=png" alt="Right Avatar">
         </div>
     </div>
     <script>
