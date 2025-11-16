@@ -24,7 +24,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;  /* Живые частицы на фоне */
+            z-index: -1;  /* Фон с искрами */
         }
         .container {
             background: #111111;  /* Тёмно-чёрный блок */
@@ -64,8 +64,10 @@
             margin-bottom: 20px;
         }
         p {
-            font-size: 18px;
+            font-size: 20px;  /* Увеличенный текст */
             margin-bottom: 30px;
+            word-wrap: break-word;  /* Подгонка под плашку */
+            padding: 0 20px;  /* Отступы для адаптации */
         }
         #key-container {
             display: flex;
@@ -95,11 +97,11 @@
     </style>
 </head>
 <body>
-    <canvas id="particles"></canvas>  <!-- Холст для частиц -->
+    <canvas id="particles"></canvas>  <!-- Холст для искр -->
     <div class="container">
         <h1>YoxiKey</h1>
         <h2>Your key</h2>
-        <p>Ключ сгенерирован автоматически. Скопируй его и вставь в Roblox-скрипт. Он одноразовый и привязан к твоему устройству. Если обновишь страницу — ключ останется тем же.</p>
+        <p></p>  <!-- Пустой p, если нужно добавить текст позже -->
         <div id="key-container">
             <div id="key"></div>
             <button id="copyBtn" style="display: none;" onclick="copyKey()">Скопировать</button>
@@ -133,7 +135,7 @@
             generateKey();  // Генерируем новый, если нет
         }
 
-        // Живые частицы (красные точки с свечением)
+        // Искры от костра (красные/оранжевые частицы, поднимающиеся вверх с свечением)
         const canvas = document.getElementById('particles');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
@@ -155,7 +157,7 @@
                 ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
                 ctx.fillStyle = this.color;
                 ctx.shadowColor = this.color;
-                ctx.shadowBlur = 10;  // Свечение
+                ctx.shadowBlur = 15;  // Увеличенное свечение
                 ctx.fill();
                 ctx.restore();
             }
@@ -171,10 +173,11 @@
         let particles = [];
         function createParticles() {
             const x = Math.random() * canvas.width;
-            const y = Math.random() * canvas.height;
-            const radius = Math.random() * 2 + 1;
-            const color = `rgba(255, 0, 0, ${Math.random() * 0.5 + 0.5})`;  // Красные частицы с вариацией
-            const velocity = { x: (Math.random() - 0.5) * 2, y: (Math.random() - 0.5) * 2 };
+            const y = canvas.height;  // Начинают снизу (как от костра)
+            const radius = Math.random() * 3 + 1;
+            const colorOptions = ['rgba(255, 69, 0, 1)', 'rgba(255, 165, 0, 1)', 'rgba(255, 0, 0, 1)'];  // Красные/оранжевые цвета искр
+            const color = colorOptions[Math.floor(Math.random() * colorOptions.length)];
+            const velocity = { x: (Math.random() - 0.5) * 1, y: - (Math.random() * 2 + 1) };  // Поднимаются вверх с небольшим разбросом
             particles.push(new Particle(x, y, radius, color, velocity));
         }
 
@@ -190,7 +193,7 @@
             });
         }
 
-        setInterval(createParticles, 200);  // Создаём новые частицы каждые 200ms
+        setInterval(createParticles, 100);  // Создаём новые искры чаще для эффекта
         animate();
 
         // Ресайз холста
