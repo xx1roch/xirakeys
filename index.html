@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <title>XiraKeys - Генератор ключей для Roblox</title>
+    <title>YoxiKey - Генератор ключей для Roblox</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background: linear-gradient(to bottom, #000000, #1a1a1a);  /* Чёрный градиент */
+            background: linear-gradient(135deg, #000000, #1a1a1a, #000000);  /* Чёрный градиент с красным оттенком */
+            background-size: 400% 400%;  /* Для анимации */
+            animation: gradientAnimation 10s ease infinite;  /* Живая анимация: медленный сдвиг градиента */
             color: #ffffff;  /* Белый текст */
             text-align: center;
             margin: 0;
@@ -15,6 +17,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         .container {
             background: #111111;  /* Тёмно-чёрный блок */
@@ -63,8 +70,8 @@
 </head>
 <body>
     <div class="container">
-        <h1>XiraKeys: Твой уникальный ключ готов!</h1>
-        <p>Ключ сгенерирован автоматически. Скопируй его и вставь в Roblox-скрипт. Он одноразовый и привязан к твоему устройству.</p>
+        <h1>YoxiKey: Твой уникальный ключ готов!</h1>
+        <p>Ключ сгенерирован автоматически. Скопируй его и вставь в Roblox-скрипт. Он одноразовый и привязан к твоему устройству. Если обновишь страницу — ключ останется тем же.</p>
         <div id="key-container">
             <div id="key"></div>
             <button id="copyBtn" style="display: none;" onclick="copyKey()">Скопировать</button>
@@ -74,16 +81,28 @@
         function generateKey() {
             const randomPart = crypto.randomUUID().replace(/-/g, '').substring(0, 12).toUpperCase();  // Рандом 12 символов
             const key = randomPart;  // Просто рандом без даты/UserId
+            localStorage.setItem('yoxiKey', key);  // Сохраняем в localStorage
+            displayKey(key);
+        }
+
+        function displayKey(key) {
             document.getElementById('key').innerHTML = 'Ключ: <strong>' + key + '</strong>';
             document.getElementById('copyBtn').style.display = 'inline-block';
-            window.currentKey = key;  // Сохраняем для копирования
+            window.currentKey = key;  // Для копирования
         }
-        generateKey();  // Авто-ген при загрузке страницы
 
         function copyKey() {
             navigator.clipboard.writeText(window.currentKey).then(() => {
                 alert('Ключ скопирован!');
             });
+        }
+
+        // Проверяем localStorage при загрузке
+        const storedKey = localStorage.getItem('yoxiKey');
+        if (storedKey) {
+            displayKey(storedKey);  // Показываем существующий ключ, не генерируем новый
+        } else {
+            generateKey();  // Генерируем новый, если нет
         }
     </script>
 </body>
