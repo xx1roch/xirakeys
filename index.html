@@ -6,8 +6,8 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            background: #000000;  /* Чёрный фон */
-            color: #ffffff;  /* Белый текст */
+            background: #000000; /* Чёрный фон */
+            color: #ffffff; /* Белый текст */
             text-align: center;
             margin: 0;
             padding: 0;
@@ -24,10 +24,10 @@
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;  /* Фон с искрами */
+            z-index: -1; /* Фон с искрами */
         }
         .container {
-            background: rgba(17, 17, 17, 0.8);  /* Тёмно-чёрный блок с прозрачностью */
+            background: rgba(17, 17, 17, 0.8); /* Тёмно-чёрный блок с прозрачностью */
             border-radius: 15px;
             padding: 40px;
             max-width: 500px;
@@ -41,33 +41,35 @@
             left: 0;
             width: 100%;
             height: 100%;
-            stroke: #FF0000;  /* Красная линия */
+        }
+        .border-path rect {
+            stroke: #FF0000; /* Красная линия */
             stroke-width: 2;
             fill: none;
-            stroke-dasharray: 2000;  /* Длина линии для анимации */
-            stroke-dashoffset: 2000;
-            animation: lineAnimation 5s linear infinite;  /* Цикл по часовой стрелке */
+            stroke-dasharray: 150 1424; /* Длина сегмента и пробела для эффекта движущейся полосы без следа */
+            stroke-dashoffset: 0;
+            animation: lineAnimation 5s linear infinite; /* Цикл по часовой стрелке */
         }
         @keyframes lineAnimation {
             to {
-                stroke-dashoffset: 0;  /* Движение линии */
+                stroke-dashoffset: -1574; /* Движение сегмента без оставления следа */
             }
         }
         h1 {
-            color: #FF0000;  /* Красный заголовок */
+            color: #ffffff; /* Белый заголовок */
             font-size: 32px;
             margin-bottom: 5px;
         }
         h2 {
-            color: #FF0000;  /* Красный подзаголовок */
+            color: #ffffff; /* Белый подзаголовок */
             font-size: 24px;
             margin-bottom: 20px;
         }
         p {
-            font-size: 20px;  /* Увеличенный текст */
+            font-size: 20px; /* Увеличенный текст */
             margin-bottom: 30px;
-            word-wrap: break-word;  /* Подгонка под плашку */
-            padding: 0 20px;  /* Отступы для адаптации */
+            word-wrap: break-word; /* Подгонка под плашку */
+            padding: 0 20px; /* Отступы для адаптации */
         }
         #key-container {
             display: flex;
@@ -77,11 +79,11 @@
         }
         #key {
             font-size: 24px;
-            color: #FF0000;  /* Красный ключ */
+            color: #ffffff; /* Белый ключ */
             margin-right: 10px;
         }
         #copyBtn {
-            background: #B22222;  /* Тёмно-красная кнопка копирования */
+            background: #B22222; /* Тёмно-красная кнопка копирования */
             color: #ffffff;
             border: none;
             padding: 8px 12px;
@@ -112,13 +114,43 @@
             width: 32px;
             height: 32px;
         }
+        .avatar-left, .avatar-right {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 1;
+        }
+        .avatar-left {
+            left: 20px;
+        }
+        .avatar-right {
+            right: 20px;
+        }
+        .avatar-wrapper {
+            perspective: 1000px;
+        }
+        .avatar-wrapper img {
+            width: 200px;
+            height: auto;
+            animation: spin 10s linear infinite;
+        }
+        @keyframes spin {
+            to {
+                transform: rotateY(360deg);
+            }
+        }
     </style>
 </head>
 <body>
-    <canvas id="particles"></canvas>  <!-- Холст для искр -->
+    <canvas id="particles"></canvas> <!-- Холст для искр -->
+    <div class="avatar-left">
+        <div class="avatar-wrapper">
+            <img src="YOUR_ROBLOX_AVATAR_IMAGE_URL_HERE" alt="Left Avatar">
+        </div>
+    </div>
     <div class="container">
         <svg class="border-path" viewBox="0 0 500 300" preserveAspectRatio="none">
-            <path d="M0,0 L500,0 L500,300 L0,300 Z" />
+            <rect x="0" y="0" width="500" height="300" rx="15" ry="15" />
         </svg>
         <div class="left-nav">
             <button class="nav-btn" onclick="window.open('https://t.me/YomkaMadeIt', '_blank')">
@@ -129,50 +161,49 @@
         </div>
         <h1>YoxiKey</h1>
         <h2>Your key</h2>
-        <p></p>  <!-- Пустой p, если нужно добавить текст позже -->
+        <p></p> <!-- Пустой p, если нужно добавить текст позже -->
         <div id="key-container">
             <div id="key"></div>
             <button id="copyBtn" style="display: none;" onclick="copyKey()">Скопировать</button>
         </div>
     </div>
+    <div class="avatar-right">
+        <div class="avatar-wrapper">
+            <img src="YOUR_ROBLOX_AVATAR_IMAGE_URL_HERE" alt="Right Avatar">
+        </div>
+    </div>
     <script>
         function generateKey() {
-            const randomPart = crypto.randomUUID().replace(/-/g, '').substring(0, 12).toUpperCase();  // Рандом 12 символов
-            const key = randomPart;  // Просто рандом без даты/UserId
-            localStorage.setItem('yoxiKey', key);  // Сохраняем в localStorage
+            const randomPart = crypto.randomUUID().replace(/-/g, '').substring(0, 12).toUpperCase(); // Рандом 12 символов
+            const key = randomPart; // Просто рандом без даты/UserId
+            localStorage.setItem('yoxiKey', key); // Сохраняем в localStorage
             displayKey(key);
         }
-
         function displayKey(key) {
-            document.getElementById('key').innerHTML = '<strong>' + key + '</strong>';  /* Убрал "Ключ:" */
+            document.getElementById('key').innerHTML = '<strong>' + key + '</strong>'; /* Убрал "Ключ:" */
             document.getElementById('copyBtn').style.display = 'inline-block';
-            window.currentKey = key;  // Для копирования
+            window.currentKey = key; // Для копирования
         }
-
         function copyKey() {
             navigator.clipboard.writeText(window.currentKey).then(() => {
                 alert('Ключ скопирован!');
             });
         }
-
         // Проверяем localStorage при загрузке
         const storedKey = localStorage.getItem('yoxiKey');
         if (storedKey) {
-            displayKey(storedKey);  // Показываем существующий ключ, не генерируем новый
+            displayKey(storedKey); // Показываем существующий ключ, не генерируем новый
         } else {
-            generateKey();  // Генерируем новый, если нет
+            generateKey(); // Генерируем новый, если нет
         }
-
         // Искры от костра (красные/оранжевые частицы, поднимающиеся вверх с свечением)
         const canvas = document.getElementById('particles');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
-
         let particles = [];
         let animationFrameId;
         let particleInterval;
-
         class Particle {
             constructor(x, y, radius, color, velocity) {
                 this.x = x;
@@ -189,7 +220,7 @@
                 ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2, false);
                 ctx.fillStyle = this.color;
                 ctx.shadowColor = this.color;
-                ctx.shadowBlur = 15;  // Увеличенное свечение
+                ctx.shadowBlur = 15; // Увеличенное свечение
                 ctx.fill();
                 ctx.restore();
             }
@@ -197,21 +228,19 @@
                 this.draw();
                 this.x += this.velocity.x;
                 this.y += this.velocity.y;
-                this.alpha -= 0.005;  // Затухание
+                this.alpha -= 0.005; // Затухание
                 if (this.alpha < 0) this.alpha = 0;
             }
         }
-
         function createParticles() {
             const x = Math.random() * canvas.width;
-            const y = canvas.height;  // Начинают снизу (как от костра)
+            const y = canvas.height; // Начинают снизу (как от костра)
             const radius = Math.random() * 3 + 1;
-            const colorOptions = ['rgba(255, 69, 0, 1)', 'rgba(255, 165, 0, 1)', 'rgba(255, 0, 0, 1)'];  // Красные/оранжевые цвета искр
+            const colorOptions = ['rgba(255, 69, 0, 1)', 'rgba(255, 165, 0, 1)', 'rgba(255, 0, 0, 1)']; // Красные/оранжевые цвета искр
             const color = colorOptions[Math.floor(Math.random() * colorOptions.length)];
-            const velocity = { x: (Math.random() - 0.5) * 1, y: - (Math.random() * 4 + 2) };  // Ускоренные искры
+            const velocity = { x: (Math.random() - 0.5) * 1, y: - (Math.random() * 4 + 2) }; // Ускоренные искры
             particles.push(new Particle(x, y, radius, color, velocity));
         }
-
         function animate() {
             animationFrameId = requestAnimationFrame(animate);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -223,23 +252,19 @@
                 }
             });
         }
-
         function startParticles() {
-            particleInterval = setInterval(createParticles, 50);  // Чаще для эффекта
+            particleInterval = setInterval(createParticles, 50); // Чаще для эффекта
             animate();
         }
-
         function stopParticles() {
             clearInterval(particleInterval);
             cancelAnimationFrame(animationFrameId);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
         }
-
         // Запуск/пауза при видимости страницы
         if (document.visibilityState === 'visible') {
             startParticles();
         }
-
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'visible') {
                 startParticles();
@@ -247,7 +272,6 @@
                 stopParticles();
             }
         });
-
         // Ресайз холста
         window.addEventListener('resize', () => {
             canvas.width = window.innerWidth;
