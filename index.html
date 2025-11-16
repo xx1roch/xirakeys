@@ -8,17 +8,21 @@
     </style>
 </head>
 <body>
-    <h1>Твой уникальный ключ сгенерирован!</h1>
-    <p>Вставь его в скрипт Roblox. Ключ привязан к твоему устройству (HWID будет проверен в игре).</p>
+    <h1>Введи свой Roblox UserId для генерации ключа</h1>
+    <p>Найди свой UserId в Roblox профиле (число вроде 123456789). Ключ будет привязан к нему и не сработает на другом аккаунте.</p>
+    <input type="number" id="userId" placeholder="Твой UserId" style="padding: 10px; width: 200px;">
+    <button onclick="generateKey()" style="padding: 10px; margin: 10px;">Генерировать ключ</button>
     <div id="key"></div>
     <script>
         function generateKey() {
-            const randomPart = crypto.randomUUID().replace(/-/g, '').substring(0, 12).toUpperCase();  // Рандомный GUID
+            const userId = document.getElementById('userId').value;
+            if (!userId) { alert('Введи UserId!'); return; }
+            const randomPart = crypto.randomUUID().replace(/-/g, '').substring(0, 12).toUpperCase();  // Рандом
             const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];  // +30 дней
-            const key = randomPart + '-' + expires;  // Формат: RANDOM-YYYY-MM-DD
-            document.getElementById('key').innerHTML = 'Ключ: <strong>' + key + '</strong>';
+            const key = randomPart + '-' + expires + '-' + userId;  // Формат: RANDOM-YYYY-MM-DD-UserId
+            document.getElementById('key').innerHTML = 'Ключ: <strong>' + key + '</strong> (скопировано в буфер)';
+            navigator.clipboard.writeText(key);  // Авто-копирование
         }
-        generateKey();  // Авто-ген при загрузке
     </script>
 </body>
 </html>
