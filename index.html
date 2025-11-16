@@ -34,30 +34,6 @@
             font-size: 18px;
             margin-bottom: 30px;
         }
-        #userId {
-            padding: 12px;
-            width: 250px;
-            border: 1px solid #FF0000;
-            border-radius: 5px;
-            background: #222222;
-            color: #ffffff;
-            font-size: 16px;
-        }
-        button {
-            background: #FF0000;  /* Красная кнопка */
-            color: #ffffff;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 5px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background 0.3s, transform 0.1s;
-            margin: 10px;
-        }
-        button:hover {
-            background: #B22222;  /* Тёмно-красный ховер */
-            transform: scale(1.05);
-        }
         #key-container {
             display: flex;
             align-items: center;
@@ -71,17 +47,24 @@
         }
         #copyBtn {
             background: #B22222;  /* Тёмно-красная кнопка копирования */
-            font-size: 14px;
+            color: #ffffff;
+            border: none;
             padding: 8px 12px;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.1s;
+        }
+        #copyBtn:hover {
+            background: #FF0000;
+            transform: scale(1.05);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>XiraKeys: Генератор ключей для Roblox</h1>
-        <p>Введи свой Roblox UserId (найди в профиле). Ключ будет привязан к нему и не сработает на другом аккаунте.</p>
-        <input type="number" id="userId" placeholder="Твой UserId">
-        <button onclick="generateKey()">Генерировать ключ</button>
+        <h1>XiraKeys: Твой уникальный ключ готов!</h1>
+        <p>Ключ сгенерирован автоматически. Скопируй его и вставь в Roblox-скрипт. Он одноразовый и привязан к твоему устройству.</p>
         <div id="key-container">
             <div id="key"></div>
             <button id="copyBtn" style="display: none;" onclick="copyKey()">Скопировать</button>
@@ -89,14 +72,13 @@
     </div>
     <script>
         function generateKey() {
-            const userId = document.getElementById('userId').value;
-            if (!userId) { alert('Введи UserId!'); return; }
             const randomPart = crypto.randomUUID().replace(/-/g, '').substring(0, 12).toUpperCase();  // Рандом 12 символов
-            const key = randomPart + '-' + userId;  // Формат: RANDOM-UserId (без даты)
+            const key = randomPart;  // Просто рандом без даты/UserId
             document.getElementById('key').innerHTML = 'Ключ: <strong>' + key + '</strong>';
             document.getElementById('copyBtn').style.display = 'inline-block';
             window.currentKey = key;  // Сохраняем для копирования
         }
+        generateKey();  // Авто-ген при загрузке страницы
 
         function copyKey() {
             navigator.clipboard.writeText(window.currentKey).then(() => {
