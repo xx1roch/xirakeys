@@ -27,7 +27,7 @@
             z-index: -1;  /* Фон с искрами */
         }
         .container {
-            background: #111111;  /* Тёмно-чёрный блок */
+            background: rgba(17, 17, 17, 0.8);  /* Тёмно-чёрный блок с прозрачностью */
             border-radius: 15px;
             padding: 40px;
             max-width: 500px;
@@ -35,23 +35,23 @@
             position: relative;
             overflow: hidden;
         }
-        .container::before {
-            content: "";
+        .border-path {
             position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, #FF0000, #B22222, #FF0000);  /* Анимированный градиентный бордер */
-            background-size: 400% 400%;
-            z-index: -1;
-            animation: borderAnimation 4s linear infinite;
-            border-radius: 15px;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            stroke: #FF0000;  /* Красная линия */
+            stroke-width: 2;
+            fill: none;
+            stroke-dasharray: 2000;  /* Длина линии для анимации */
+            stroke-dashoffset: 2000;
+            animation: lineAnimation 5s linear infinite;  /* Цикл по часовой стрелке */
         }
-        @keyframes borderAnimation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+        @keyframes lineAnimation {
+            to {
+                stroke-dashoffset: 0;  /* Движение линии */
+            }
         }
         h1 {
             color: #FF0000;  /* Красный заголовок */
@@ -94,11 +94,39 @@
             background: #FF0000;
             transform: scale(1.05);
         }
+        .left-nav {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+        }
+        .nav-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        .nav-btn svg {
+            width: 32px;
+            height: 32px;
+        }
     </style>
 </head>
 <body>
     <canvas id="particles"></canvas>  <!-- Холст для искр -->
     <div class="container">
+        <svg class="border-path" viewBox="0 0 500 300" preserveAspectRatio="none">
+            <path d="M0,0 L500,0 L500,300 L0,300 Z" />
+        </svg>
+        <div class="left-nav">
+            <button class="nav-btn" onclick="window.open('https://t.me/YomkaMadeIt', '_blank')">
+                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M21.5439 2.00098C21.2909 2.09098 4.06894 9.25498 3.66094 9.42098C2.82194 9.77298 3.04294 10.9809 3.83794 10.8239L7.40494 10.0609C7.84494 9.96498 8.30494 10.1079 8.62694 10.4289L12.4029 14.2049C12.7239 14.5259 12.8659 14.9859 12.7709 15.4259L12.0079 18.993C11.8509 19.788 13.0589 20.008 13.4109 19.169C13.5769 18.761 20.7409 1.53998 20.8309 1.28698C20.9289 1.02898 20.8019 0.564976 20.5439 0.456976L4.66994 6.42098L4.66794 6.42298" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </button>
+        </div>
         <h1>YoxiKey</h1>
         <h2>Your key</h2>
         <p></p>  <!-- Пустой p, если нужно добавить текст позже -->
@@ -116,7 +144,7 @@
         }
 
         function displayKey(key) {
-            document.getElementById('key').innerHTML = 'Ключ: <strong>' + key + '</strong>';
+            document.getElementById('key').innerHTML = '<strong>' + key + '</strong>';  /* Убрал "Ключ:" */
             document.getElementById('copyBtn').style.display = 'inline-block';
             window.currentKey = key;  // Для копирования
         }
@@ -140,6 +168,10 @@
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+
+        let particles = [];
+        let animationFrameId;
+        let particleInterval;
 
         class Particle {
             constructor(x, y, radius, color, velocity) {
@@ -170,19 +202,18 @@
             }
         }
 
-        let particles = [];
         function createParticles() {
             const x = Math.random() * canvas.width;
             const y = canvas.height;  // Начинают снизу (как от костра)
             const radius = Math.random() * 3 + 1;
             const colorOptions = ['rgba(255, 69, 0, 1)', 'rgba(255, 165, 0, 1)', 'rgba(255, 0, 0, 1)'];  // Красные/оранжевые цвета искр
             const color = colorOptions[Math.floor(Math.random() * colorOptions.length)];
-            const velocity = { x: (Math.random() - 0.5) * 1, y: - (Math.random() * 2 + 1) };  // Поднимаются вверх с небольшим разбросом
+            const velocity = { x: (Math.random() - 0.5) * 1, y: - (Math.random() * 4 + 2) };  // Ускоренные искры
             particles.push(new Particle(x, y, radius, color, velocity));
         }
 
         function animate() {
-            requestAnimationFrame(animate);
+            animationFrameId = requestAnimationFrame(animate);
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             particles.forEach((particle, index) => {
                 if (particle.alpha > 0) {
@@ -193,8 +224,29 @@
             });
         }
 
-        setInterval(createParticles, 100);  // Создаём новые искры чаще для эффекта
-        animate();
+        function startParticles() {
+            particleInterval = setInterval(createParticles, 50);  // Чаще для эффекта
+            animate();
+        }
+
+        function stopParticles() {
+            clearInterval(particleInterval);
+            cancelAnimationFrame(animationFrameId);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // Запуск/пауза при видимости страницы
+        if (document.visibilityState === 'visible') {
+            startParticles();
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                startParticles();
+            } else {
+                stopParticles();
+            }
+        });
 
         // Ресайз холста
         window.addEventListener('resize', () => {
