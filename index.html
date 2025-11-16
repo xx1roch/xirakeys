@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Авто-генератор ключей для Roblox</title>
+    <style>
+        body { font-family: Arial; text-align: center; background: #f0f0f0; }
+        #key { font-size: 24px; color: green; }
+    </style>
+</head>
+<body>
+    <h1>Твой уникальный ключ сгенерирован!</h1>
+    <p>Вставь его в скрипт Roblox. Ключ привязан к твоему устройству (HWID будет проверен в игре).</p>
+    <div id="key"></div>
+    <script>
+        function generateKey() {
+            const randomPart = crypto.randomUUID().replace(/-/g, '').substring(0, 12).toUpperCase();  // Рандомный GUID
+            const expires = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];  // +30 дней
+            const key = randomPart + '-' + expires;  // Формат: RANDOM-YYYY-MM-DD
+            document.getElementById('key').innerHTML = 'Ключ: <strong>' + key + '</strong>';
+        }
+        generateKey();  // Авто-ген при загрузке
+    </script>
+</body>
+</html>
