@@ -90,11 +90,21 @@
             border-radius: 5px;
             font-size: 14px;
             cursor: pointer;
-            transition: background 0.3s, transform 0.1s;
+            transition: background 0.3s, transform 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         #copyBtn:hover {
             background: #FF0000;
-            transform: scale(1.05);
+            transform: scale(1.1);
+        }
+        #copyBtn:active {
+            transform: scale(0.95);
+        }
+        #copyBtn img {
+            width: 24px;
+            height: 24px;
         }
         .top-left-nav {
             position: absolute;
@@ -113,47 +123,17 @@
             width: 32px;
             height: 32px;
         }
-        .avatar-left, .avatar-right {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 1;
-        }
-        .avatar-left {
-            left: 20px;
-        }
-        .avatar-right {
-            right: 20px;
-        }
-        .avatar-wrapper {
-            perspective: 1000px;
-        }
-        .avatar-wrapper img {
-            width: 200px;
-            height: auto;
-            animation: spin 10s linear infinite;
-        }
-        @keyframes spin {
-            to {
-                transform: rotateY(360deg);
-            }
-        }
     </style>
 </head>
 <body>
     <canvas id="particles"></canvas> <!-- Холст для искр -->
-    <div class="avatar-left">
-        <div class="avatar-wrapper">
-            <img src="https://tr.rbxcdn.com/30DAY-Avatar-236DA574D5CFDA8E92EA0CD5B4650293-Png/720/720/Avatar/Png/noFilter" alt="Left Avatar">
-        </div>
-    </div>
     <div class="container">
         <svg class="border-path" viewBox="0 0 500 300" preserveAspectRatio="none">
             <rect x="0" y="0" width="500" height="300" rx="15" ry="15" />
         </svg>
         <div class="top-left-nav">
             <button class="nav-btn" onclick="window.open('https://t.me/YomkaMadeIt', '_blank')">
-                <img src="https://thumbs.dreamstime.com/b/telegram-logo-icon-set-telegram-logo-icon-386636999.jpg" alt="Telegram">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLXNlbmQtaWNvbiBsdWNpZGUtc2VuZCI+PHBhdGggZD0iTTE0LjUzNiAyMS42ODZhLjUuNSAwIDAgMCAuOTM3LS4wMjRsNi41LTE5YS40OTYuNDk2IDAgMCAwLS42MzUtLjYzNWwtMTkgNi41YS41LjUgMCAwIDAtLjAyNC45MzdsNy45MyAzLjE4YTIgMiAwIDAgMSAxLjExMiAxLjExeiIvPjxwYXRoIGQ9Im0yMS44NTQgMi4xNDctMTAuOTQgMTAuOTM5Ii8+PC9zdmc+" alt="Telegram">
             </button>
         </div>
         <h1>YoxiKey</h1>
@@ -161,12 +141,9 @@
         <p></p> <!-- Пустой p, если нужно добавить текст позже -->
         <div id="key-container">
             <div id="key"></div>
-            <button id="copyBtn" style="display: none;" onclick="copyKey()">copy</button>
-        </div>
-    </div>
-    <div class="avatar-right">
-        <div class="avatar-wrapper">
-            <img src="https://tr.rbxcdn.com/30DAY-Avatar-2AA83DF7C81430C2E5C3C385ADABCB2A-Png/720/720/Avatar/Png/noFilter" alt="Right Avatar">
+            <button id="copyBtn" style="display: none;" onclick="copyKey()">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWNvcHktaWNvbiBsdWNpZGUtY29weSI+PHJlY3Qgd2lkdGg9IjE0IiBoZWlnaHQ9IjE0IiB4PSI4IiB5PSI4IiByeD0iMiIgcnk9IjIiLz48cGF0aCBkPSJNNCAxNmMtMS4xIDAtMi0uOS0yLTJWNGMwLTEuMS45LTIgMi0yaDEwYzEuMSAwIDIgLjkgMiAyIi8+PC9zdmc+" alt="Copy">
+            </button>
         </div>
     </div>
     <script>
